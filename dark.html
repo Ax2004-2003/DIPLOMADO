@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anuncio: El Riesgo de la Auto-replicación de ChatGPT</title>
     <script src="https://cdn.tailwindcss.com"></script>
-      <link rel="manifest" href="manifest.json">
-
+    <link rel="manifest" href="manifest.json">
     <style>
         /* Animación para el título */
         @keyframes slideIn {
@@ -33,7 +32,7 @@
 
         .animate-fade-in-up {
             animation: fadeInUp 1s ease-out forwards;
-;        }
+        }
 
         .hover-pulse:hover {
             animation: pulse 0.3s ease-in-out;
@@ -225,6 +224,19 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
+
+        // Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar el Service Worker:', error);
+                    });
+            });
+        }
 
         animate();
     </script>
