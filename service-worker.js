@@ -5,8 +5,8 @@ self.addEventListener('install', event => {
         '/',
         'dark.html',
         'manifest.json',
-        'icon-192x192.png',
-        'icon-512x512.png'
+        'chat1.jpg',
+        'chat2.jpg'
       ]);
     })
   );
