@@ -1,90 +1,41 @@
-// service-worker.js
-const CACHE_NAME = 'ai-risk-site-v1';
-const ASSETS_TO_CACHE = [
-  '/',                // si tu archivo principal se sirve como index.html
-  '/dark.html',       // tu página HTML (ajusta si la nombras distinto)
-  '/manifest.json',
-  '/service-worker.js',
-  // iconos (ponlos en /icons/)
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+const CACHE_NAME = 'pwa-cache-v1';
+const URLS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './service-worker.js',
+  'https://cdn.tailwindcss.com'
 ];
 
-// Install: precache assets
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
+// Instalación: guardar en caché los recursos iniciales
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
-      .catch((err) => console.warn('Precaching falló:', err))
-  );
-});
-
-// Activate: limpiar caches antiguos
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    ).then(() => self.clients.claim())
-  );
-});
-
-// Fetch: estrategia híbrida
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-
-  // Para navegación (HTML) usamos network-first con fallback a cache
-  if (req.mode === 'navigate' || (req.method === 'GET' && req.headers.get('accept')?.includes('text/html'))) {
-    event.respondWith(
-      fetch(req)
-        .then((networkResp) => {
-          // actualizar cache con la última versión de la página
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, networkResp.clone()));
-          return networkResp;
-        })
-        .catch(() => caches.match(req).then((cached) => cached || caches.match('/dark.html') || new Response(
-          `<html><body><h1>Sin conexión</h1><p>Parece que estás sin conexión y la página no está cacheada.</p></body></html>`,
-          { headers: { 'Content-Type': 'text/html' } }
-        )))
-    );
-    return;
-  }
-
-  // Para requests estáticos (CSS/JS/imagenes): cache-first, conexion fallback
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req)
-        .then((networkResp) => {
-          // opcional: cachear respuestas ok (status 200) para futuras visitas
-          if (networkResp && networkResp.status === 200 && req.method === 'GET') {
-            caches.open(CACHE_NAME).then((cache) => {
-              // evita cachear respuestas cross-origin innecesarias (opcional)
-              try { cache.put(req, networkResp.clone()); } catch (e) { /* ioe */ }
-            });
-          }
-          return networkResp.clone ? networkResp : networkResp;
-        })
-        .catch(() => {
-          // fallback para imágenes -> puedes poner '/icons/fallback.png' si quieres
-          if (req.destination === 'image') {
-            return new Response('', { status: 404, statusText: 'Imagen no disponible' });
-          }
-          return new Response('Recurso no disponible', { status: 503 });
-        });
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Archivos cacheados');
+      return cache.addAll(URLS_TO_CACHE);
     })
   );
 });
 
-// Opción: escucha mensajes desde la página para activar actualización inmediata
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+// Activación: limpiar cachés viejas
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames =>
+      Promise.all(
+        cacheNames
+          .filter(name => name !== CACHE_NAME)
+          .map(name => caches.delete(name))
+      )
+    )
+  );
+});
+
+// Interceptar peticiones y responder desde caché
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      // Si está en caché, responde, si no, busca en la red
+      return response || fetch(event.request);
+    })
+  );
 });
