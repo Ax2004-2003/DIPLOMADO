@@ -4,8 +4,6 @@ self.addEventListener('install', event => {
       return cache.addAll([
         '/',
         'dark.html',
-        'style.css',
-        'script.js',
         'manifest.json',
         'icon-192x192.png',
         'icon-512x512.png'
@@ -18,6 +16,6 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(respuesta => respuesta || fetch(event.request))
+      .then(response => response || fetch(event.request))
   );
 });
