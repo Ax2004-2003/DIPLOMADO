@@ -3,9 +3,12 @@ self.addEventListener('install', event => {
     caches.open('mi-pwa-cache').then(cache => {
       return cache.addAll([
         '/',
-        'index.html',
+        'dark.html',
         'style.css',
-        'script.js'
+        'script.js',
+        'manifest.json',
+        'icon-192x192.png',
+        'icon-512x512.png'
       ]);
     })
   );
