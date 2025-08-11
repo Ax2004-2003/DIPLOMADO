@@ -1,20 +1,20 @@
 {
-  "name": "CIBERSEGURIDAD",
-  "short_name": "CYBER",
-  "start_url": "dark.html",
-  "display": "standalone",
-  "background_color": "#f1e3d3",
-  "theme_color": "#ff9494",
-  "icons": [
-    {
-      "src": "chat1.jpg",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "chat2.jpg",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "CIBERSEGURIDAD",
+    "short_name": "CYBER",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1e3a8a",
+    "theme_color": "#4c1d95",
+    "icons": [
+        {
+            "src": "chat1.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "chat2.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
 }

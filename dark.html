@@ -198,17 +198,19 @@
             canvas.height = window.innerHeight;
         });
 
-        window.addEventListener('load', () => {
-            if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
                     .then(registration => {
-                        console.log('Service Worker registered with scope:', registration.scope);
+                        console.log('Service Worker registrado con éxito:', registration);
                     })
                     .catch(error => {
-                        console.error('Service Worker registration failed:', error);
+                        console.error('Error al registrar el Service Worker:', error);
                     });
-            }
-        });
+            });
+        }
+
+        animate();
     </script>
 </body>
 </html>
