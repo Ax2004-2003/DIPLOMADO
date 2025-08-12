@@ -1,9 +1,9 @@
 const CACHE_NAME = 'pwa-cache-v1';
 const URLS_TO_CACHE = [
   './',
-  './index.html',
-  './manifest.json',
-  './service-worker.js',
+  'index.html',
+  'manifest.json',
+  'service-worker.js',
   'https://cdn.tailwindcss.com'
 ];
 
